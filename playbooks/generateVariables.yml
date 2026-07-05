@@ -1,0 +1,49 @@
+---
+- name: Generate variables
+  hosts: local
+  vars:
+    # Генерирует число от 1024 до 65535
+    serverPort: "{{ 65535 | random(start=1024) }}"
+
+  tasks:
+    - name: Install wireguard-tools
+      become: True
+      apt:
+        update_cache: True
+        cache_valid_time: 3600
+        pkg:
+          - wireguard-tools
+
+    - name: Generate server private key
+      command: wg genkey
+      register: serverPrivateKey
+
+    - name: Generate client private key
+      command: wg genkey
+      register: clientPrivateKey
+
+    - name: Generate server public key
+      shell: echo "{{serverPrivateKey.stdout}}" | wg pubkey
+      register: serverPublicKey
+
+    - name: Generate client public key
+      shell: echo "{{clientPrivateKey.stdout}}" | wg pubkey
+      register: clientPublicKey
+
+    - name: Generate obfuscation key
+      set_fact:
+        obfsKey: "{{ lookup('password', '/dev/null length=10 chars=ascii_letters,digits') }}"
+
+    - name: Write in file
+      become: True
+      copy:
+        content: |
+          serverPort: "{{serverPort}}"
+          serverIP: "{{ hostvars['vpn-server'].ansible_host }}"
+          serverPrivateKey: "{{serverPrivateKey.stdout}}"
+          serverPublicKey: "{{serverPublicKey.stdout}}"
+          clientPrivateKey: "{{clientPrivateKey.stdout}}"
+          clientPublicKey: "{{clientPublicKey.stdout}}"
+          obfsKey: "{{obfsKey}}"
+        dest: ../group_vars/serverParameters.yml
+...

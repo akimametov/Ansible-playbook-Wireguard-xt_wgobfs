@@ -1,0 +1,6 @@
+serverWgIntfIP: "10.0.0.1"
+wgIntfMask: "24"
+serverWgIntfName: "wg0"
+
+clientWgIntfIP: "10.0.0.2"
+clientWgIntfName: "wg0"

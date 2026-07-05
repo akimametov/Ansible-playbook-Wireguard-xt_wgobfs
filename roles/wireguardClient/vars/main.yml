@@ -1,0 +1,5 @@
+---
+moduleSrcPath: "/home/{{ ansible_user }}/xt_wgobfs/"
+moduleName: "xt_wgobfs"
+moduleReleaseVersion: "0.6.2"
+...

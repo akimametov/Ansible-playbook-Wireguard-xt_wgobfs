@@ -1,0 +1,9 @@
+---
+- include_vars:
+    file: "{{ item }}"
+  loop:
+    - "{{ playbook_dir }}/group_vars/serverParameters.yml"
+    - "{{ playbook_dir }}/group_vars/wgIntfName_IP.yml"
+- include_tasks: installWG-Client.yml
+- include_tasks: installXt_wgobfs-Client.yml
+...

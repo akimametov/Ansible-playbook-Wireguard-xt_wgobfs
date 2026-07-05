@@ -1,0 +1,24 @@
+---
+- name: Install packages
+  apt:
+    update_cache: true
+    cache_valid_time: 3600
+    pkg:
+      - wireguard
+      - resolvconf
+
+- name: Configure DNS from resolvconf
+  command: resolvconf -u
+
+- name: Create config file
+  template:
+    src: ../templates/wg.conf-server.j2
+    dest: /etc/wireguard/{{serverWgIntfName}}.conf
+
+- name: Run and enable autorun
+  service:
+    name: wg-quick@{{serverWgIntfName}}
+    state: started
+    enabled: true
+...
+

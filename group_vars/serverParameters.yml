@@ -1,0 +1,7 @@
+serverPort: "1111"
+serverIP: "192.168.5.21"
+serverPrivateKey: "aGxyuiAi3fjHbwbifiYTw6mXA5cW960Tc/F9h2GdcXg="
+serverPublicKey: "FWp7ipVTgG2bRdzoM3PF7w+XYiEF7iqv3TwfZwuM4Go="
+clientPrivateKey: "4Npylf4QkXUXTEES2xgQk776FZxtJuO1xaE/rj81jkA="
+clientPublicKey: "0VWoT96PO+/HDkiFc3t4TjhoLmAFqKz3fchgOQr1nXg="
+obfsKey: "MP9BHcFXyn"

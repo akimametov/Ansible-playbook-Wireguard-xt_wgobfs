@@ -1,0 +1,7 @@
+---
+- name: Install Wireguard-Client and xt_wgobfs kernel module
+  hosts: vpn-client
+  become: True
+  roles:
+    - wireguardClient
+...

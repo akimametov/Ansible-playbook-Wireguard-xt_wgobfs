@@ -1,0 +1,11 @@
+[Interface]
+Address = {{serverWgIntfIP}}/{{wgIntfMask}}
+ListenPort = {{serverPort}}
+PrivateKey = {{serverPrivateKey}}
+DNS = 8.8.8.8
+Table=off
+
+[Peer]
+PublicKey = {{clientPublicKey}}
+AllowedIPs = 0.0.0.0/0, ::/0
+PersistentKeepalive = 25

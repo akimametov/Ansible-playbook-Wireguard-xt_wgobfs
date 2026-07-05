@@ -1,0 +1,107 @@
+---
+    - name: Install packages
+      become: true
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+        pkg:
+          - build-essential
+          - git
+          - dh-autoreconf
+          - pkg-config
+          - libxtables-dev
+          - dkms
+          - iptables
+          - iptables-persistent
+
+    - name: Download source from git
+      git:
+        repo: https://github.com/infinet/xt_wgobfs.git
+        dest: "{{moduleSrcPath}}"
+        version: v{{moduleReleaseVersion}}
+
+    - name: Run script autogen.sh
+      shell: ./autogen.sh
+      args:
+        chdir: "{{moduleSrcPath}}"
+
+    - name: Run script configure
+      shell: ./configure
+      args:
+        chdir: "{{moduleSrcPath}}"
+
+    - name: Build
+      become: True
+      command:
+        cmd: make
+        chdir: "{{moduleSrcPath}}"
+
+    - name: Install
+      become: True
+      command:
+        cmd: make install
+        chdir: "{{moduleSrcPath}}"
+
+    - name: Rebuild kernel module dependencies
+      become: true
+      command: depmod -a
+
+    - name: Install kernel-module
+      become: True
+      modprobe:
+        name: xt_WGOBFS
+        state: present
+
+    - name: Make dir for module and copy code
+      become: True
+      copy:
+        src: "{{moduleSrcPath}}"
+        remote_src: True
+        dest: /usr/src/{{moduleName}}-{{moduleReleaseVersion}}/
+
+    - name: DKMS - Add module
+      become: True
+      command:
+        cmd: dkms add -m {{moduleName}} -v {{moduleReleaseVersion}}
+        creates: /var/lib/dkms/{{moduleName}}/{{moduleReleaseVersion}}
+
+    - name: DKMS - Build module
+      become: True
+      command:
+        cmd: dkms build -m {{moduleName}} -v {{moduleReleaseVersion}}
+
+    - name: DKMS - Install module
+      become: True
+      command:
+        cmd: dkms install -m {{moduleName}} -v {{moduleReleaseVersion}}
+
+    - name: Create file for autorun module
+      become: True
+      copy:
+        dest: /etc/modules-load.d/xt_wgobfs.conf
+        content: xt_WGOBFS
+
+    - name: Create direcory for save iptables rules
+      become: True
+      file:
+        path: /etc/iptables
+        state: directory
+
+    - name: Create file for save iptables rules
+      become: True
+      file:
+        path: /etc/iptables/rules.v4
+        state: touch
+
+    - name: Add iptables rules-1
+      become: True
+      command: iptables -t mangle -A INPUT -p udp --dport "{{serverPort}}" -j WGOBFS --key "{{obfsKey}}" --unobfs
+
+    - name: Add iptables rules-2
+      become: True
+      command: iptables -t mangle -A OUTPUT -p udp --sport "{{serverPort}}" -j WGOBFS --key "{{obfsKey}}" --obfs
+
+    - name: Save iptables rules
+      become: True
+      command: iptables-save -f /etc/iptables/rules.v4
+...

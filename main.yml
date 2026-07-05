@@ -1,0 +1,17 @@
+---
+- import_playbook: playbooks/generateVariables.yml
+
+- name: Install Wireguard-Server and xt_wgobfs kernel module
+  hosts: vpn-servers
+  become: True
+  roles:
+    - wireguardServer
+
+- name: Install Wireguard-Client and xt_wgobfs kernel module
+  hosts: vpn-client
+  become: True
+  roles:
+    - wireguardClient
+
+- import_playbook: playbooks/ping.yml
+...

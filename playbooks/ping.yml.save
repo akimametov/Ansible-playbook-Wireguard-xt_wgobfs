@@ -1,0 +1,16 @@
+---
+- name: Ping remote client WG-interface
+  hosts: vpn-servers
+
+  tasks:
+    - name: Ping
+      command: ping -I wg0 -c 5 10.0.0.3
+      register: ping_result
+      ignore_errors: True
+
+    - name: Show ping result
+      debug:
+        msg:
+          - "{{'УСПЕШНО!' if ping_result.rc == 0 else 'ОШИБКА!'}}"
+          - "{{ping_result.stdout_lines}}"
+...

@@ -1,0 +1,19 @@
+---
+- import_playbook: playbooks/generateVariables.yml
+
+- name: Install Wireguard-Server and xt_wgobfs kernel module
+  hosts: vpn-servers
+  become: True
+  roles:
+    - wireguardServer
+
+  tasks:
+    - name: Show parameters for WG-client
+      debug:
+        msg:
+          - "Server IP: {{serverIP}}"
+          - "Server port: {{serverPort}}"
+          - "Server public key: {{serverPublicKey}}"
+          - "Client private key: {{clientPrivateKey}}"
+          - "Obfuskation key: {{obfsKey}}"
+...
