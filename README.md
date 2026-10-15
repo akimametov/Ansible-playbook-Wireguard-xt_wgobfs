@@ -1,5 +1,5 @@
 # **Ansible-playbook для установки и настройки Wireguard и модуля xt_wgobfs**
-Плейбук устанавливает и настраивает Wireguard и модуль ядра Linux xt_wgobfs, который служит для обфускации Wireguard-трафика, на сервере и клиенте на ОС Debian. 
+Плейбук устанавливает и настраивает Wireguard и модуль ядра Linux xt_wgobfs (https://github.com/infinet/xt_wgobfs), который служит для обфускации Wireguard-трафика, на сервере и клиенте на ОС Debian. 
 
 **Плейбук автоматически выполняет:** 
 
